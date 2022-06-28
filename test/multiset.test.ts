@@ -116,6 +116,7 @@ describe('inclusion', () => {
     const bag1 = new Map([["a", 6], ["b", 4]]);
     const bag2 = new Map([["a", 10], ["b", 5]]);
     expect(inclusion(bag1, bag2)).toEqual(true);
+    expect(inclusion(bag2, bag1)).toEqual(false);
   });
 });
 
@@ -128,14 +129,14 @@ describe('sum', () => {
 
   it('Aplica operação de soma entre uma bag vazia e uma com elementos', () => {
     const bag1 = new Map();
-    const bag2 = new Map([["a", 10], ["b", 5]]);
-    expect(sum(bag1, bag2)).toEqual(new Map([["a", 10], ["b", 5]]));
+    const bag2 = new Map([["a", 10], ["b", 5], ["c", 10]]);
+    expect(sum(bag1, bag2)).toEqual(new Map([["a", 10], ["b", 5], ["c", 10]]));
   });
 
   it('Aplica operação de soma entre duas bags', () => {
     const bag1 = new Map([["a", 6]]);
-    const bag2 = new Map([["a", 10], ["b", 5]]);
-    expect(sum(bag1, bag2)).toEqual(new Map([["a", 16], ["b", 5]]));
+    const bag2 = new Map([["a", 10], ["b", 5], ["c", 10]]);
+    expect(sum(bag1, bag2)).toEqual(new Map([["a", 16], ["b", 5], ["c", 10]]));
   });
 });
 
