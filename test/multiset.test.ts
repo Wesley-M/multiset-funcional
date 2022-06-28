@@ -1,4 +1,4 @@
-import { insert, intersection, minus, remove, search, size, union } from '../src/multiset';
+import { inclusion, insert, intersection, minus, remove, search, size, sum, union } from '../src/multiset';
 
 describe('insert', () => {
   it('Adiciona valor em multiset vazio', () => {
@@ -96,6 +96,46 @@ describe('minus', () => {
     const bag3 = new Map([["a", 3], ["b", 1]]);
     const bag4 = new Map([["b", 2], ["a", 1]]);
     expect(minus(bag3, bag4)).toEqual(new Map([["a", 2]]))    
+  });
+});
+
+describe('inclusion', () => {
+  it('Aplica operação de inclusão entre duas bags vazias', () => {
+    const bag1 = new Map();
+    const bag2 = new Map();
+    expect(inclusion(bag1, bag2)).toEqual(true);
+  });
+
+  it('Aplica operação de inclusão entre uma bag vazia e uma com elementos', () => {
+    const bag1 = new Map();
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(inclusion(bag1, bag2)).toEqual(true);
+  });
+
+  it('Aplica operação de inclusão entre duas bags', () => {
+    const bag1 = new Map([["a", 6], ["b", 4]]);
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(inclusion(bag1, bag2)).toEqual(true);
+  });
+});
+
+describe('sum', () => {
+  it('Aplica operação de soma entre duas bags vazias', () => {
+    const bag1 = new Map();
+    const bag2 = new Map();
+    expect(sum(bag1, bag2)).toEqual(new Map());
+  });
+
+  it('Aplica operação de soma entre uma bag vazia e uma com elementos', () => {
+    const bag1 = new Map();
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(sum(bag1, bag2)).toEqual(new Map([["a", 10], ["b", 5]]));
+  });
+
+  it('Aplica operação de soma entre duas bags', () => {
+    const bag1 = new Map([["a", 6]]);
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(sum(bag1, bag2)).toEqual(new Map([["a", 16], ["b", 5]]));
   });
 });
 

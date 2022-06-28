@@ -53,8 +53,8 @@ function intersection<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   let intersectEntries: [T, number][] = anotherBagEntries.filter(([k, _]) => hasElement(k, bag))
   intersectEntries = intersectEntries.map(([k, v]) => [k, Math.min(v, search(k, bag))])
 
-  const union = new Map<T, number>(intersectEntries)
-  return union;
+  const intersection = new Map<T, number>(intersectEntries)
+  return intersection;
 }
 
 function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
@@ -70,13 +70,27 @@ function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   return minusMap;
 }
 
-// Inclusion
-// sumBags
+function inclusion<T>(bag: Bag<T>, anotherBag: Bag<T>): boolean {
+  const bagEntries = Array.from(bag.entries())
+      
+  return bagEntries.every(([k, freq]) => { 
+    return search(k, anotherBag) >= freq
+  })
+}
+
+function sum<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
+  const entries = Array.from(anotherBag.entries())
+  const intersectEntries: [T, number][] = entries.filter(([k, _]) => hasElement(k, bag))
+  const summedEntries: [T, number][] = intersectEntries.map(([k, v]) => [k, v + search(k, bag)])
+  
+  const sum = new Map<T, number>([...entries, ...bag.entries(), ...summedEntries])
+  return sum;
+}
 
 function size<T>(bag: Bag<T>): number {
   const values = Array.from(bag.values())
   return values.reduce((currentSum, number) => currentSum + number, 0);
 }
 
-export { insert, remove, search, union, intersection, minus, size };
+export { insert, remove, search, union, intersection, minus, inclusion, sum, size };
 
