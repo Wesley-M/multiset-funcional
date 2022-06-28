@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest"
+    "test": "tsc && jest"
   },
   "devDependencies": {
     "@types/jest": "^28.1.3",
