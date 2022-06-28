@@ -38,23 +38,30 @@ function search<T>(elem: T, bag: Bag<T>): number {
   return quantity;
 }
 
-function union<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
-  const entries = Array.from(anotherBag.entries())
-  const intersectEntries: [T, number][] = entries.filter(([k, _]) => hasElement(k, bag))
-  const unionEntries: [T, number][] = intersectEntries.map(([k, v]) => [k, Math.max(v, search(k, bag))])
-
-  const union = new Map<T, number>([...entries, ...bag.entries(), ...unionEntries])
-  return union;
-}
-
-function intersection<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
+function intersectionWith<T>(bag: Bag<T>, anotherBag: Bag<T>, fn: (n1: number, n2: number) => number): Bag<T> {
   const anotherBagEntries = Array.from(anotherBag.entries())
   
-  let intersectEntries: [T, number][] = anotherBagEntries.filter(([k, _]) => hasElement(k, bag))
-  intersectEntries = intersectEntries.map(([k, v]) => [k, Math.min(v, search(k, bag))])
+  const intersectEntries: [T, number][] = anotherBagEntries.filter(([k, _]) => hasElement(k, bag))
+                                                           .map(([k, v]) => [k, fn(v, search(k, bag))]);
 
   const intersection = new Map<T, number>(intersectEntries)
   return intersection;
+}
+
+
+function unionWith<T>(bag: Bag<T>, anotherBag: Bag<T>, fn: (n1: number, n2: number) => number): Bag<T> {
+  const intersection = intersectionWith(bag, anotherBag, fn);
+
+  const union = new Map<T, number>([...anotherBag, ...bag, ...intersection])
+  return union;
+}
+
+function union<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
+  return unionWith(bag, anotherBag, Math.max);
+}
+
+function intersection<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
+  return intersectionWith(bag, anotherBag, Math.min);
 }
 
 function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
@@ -79,12 +86,7 @@ function inclusion<T>(bag: Bag<T>, anotherBag: Bag<T>): boolean {
 }
 
 function sum<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
-  const entries = Array.from(anotherBag.entries())
-  const intersectEntries: [T, number][] = entries.filter(([k, _]) => hasElement(k, bag))
-  const summedEntries: [T, number][] = intersectEntries.map(([k, v]) => [k, v + search(k, bag)])
-  
-  const sum = new Map<T, number>([...entries, ...bag.entries(), ...summedEntries])
-  return sum;
+  return unionWith(bag, anotherBag, (a, b) => a + b);
 }
 
 function size<T>(bag: Bag<T>): number {
