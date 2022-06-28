@@ -2,4 +2,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  projects: [{ 
+      testMatch: ["<rootDir>/test/*.js"] 
+  }]
 };
