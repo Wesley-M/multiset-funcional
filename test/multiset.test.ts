@@ -1,4 +1,4 @@
-import { insert, remove, search, union, size } from '../src/multiset'
+import { insert, intersection, minus, remove, search, size, union } from '../src/multiset';
 
 describe('insert', () => {
   it('Adiciona valor em multiset vazio', () => {
@@ -52,6 +52,50 @@ describe('union', () => {
     const bag1 = new Map([["a", 1], ["b", 7], ["c", 20]]);
     const bag2 = new Map([["a", 10], ["b", 5]]);
     expect(union(bag1, bag2)).toEqual(new Map([["a", 10], ["b", 7], ["c", 20]]))
+  });
+});
+
+describe('intersection', () => {
+  it('Aplica operação de interseção entre duas bags vazias', () => {
+    const bag1 = new Map();
+    const bag2 = new Map();
+    expect(intersection(bag1, bag2)).toEqual(new Map())
+  });
+
+  it('Aplica operação de interseção entre uma bag vazia e uma com elementos', () => {
+    const bag1 = new Map();
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(intersection(bag1, bag2)).toEqual(new Map())
+  });
+
+  it('Aplica operação de interseção entre duas bags', () => {
+    const bag1 = new Map([["a", 1], ["b", 7], ["c", 20]]);
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(intersection(bag1, bag2)).toEqual(new Map([["a", 1], ["b", 5]]))
+  });
+});
+
+describe('minus', () => {
+  it('Aplica operação de diferença entre duas bags vazias', () => {
+    const bag1 = new Map();
+    const bag2 = new Map();
+    expect(minus(bag1, bag2)).toEqual(new Map())
+  });
+
+  it('Aplica operação de diferença entre uma bag vazia e uma com elementos', () => {
+    const bag1 = new Map();
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(minus(bag1, bag2)).toEqual(new Map())
+  });
+
+  it('Aplica operação de diferença entre duas bags', () => {
+    const bag1 = new Map([["a", 11], ["b", 7], ["c", 20]]);
+    const bag2 = new Map([["a", 10], ["b", 5]]);
+    expect(minus(bag1, bag2)).toEqual(new Map([["a", 1], ["b", 2], ["c", 20]]))
+
+    const bag3 = new Map([["a", 3], ["b", 1]]);
+    const bag4 = new Map([["b", 2], ["a", 1]]);
+    expect(minus(bag3, bag4)).toEqual(new Map([["a", 2]]))    
   });
 });
 
