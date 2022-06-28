@@ -1,5 +1,17 @@
 # TS Multiset
 
-## Testando
+## Como usar
 
-#### 1. npm test
+Antes de tudo, é necessário ter o npm (ou yarn) instalado.
+
+Agora basta rodar o seguinte comando
+
+```bash
+$ npm i
+```
+
+#### Rodando os testes
+
+```bash
+$ npm test
+```
