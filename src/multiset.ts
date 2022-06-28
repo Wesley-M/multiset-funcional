@@ -41,8 +41,8 @@ function search<T>(elem: T, bag: Bag<T>): number {
 function intersectionWith<T>(bag: Bag<T>, anotherBag: Bag<T>, fn: (n1: number, n2: number) => number): Bag<T> {
   const anotherBagEntries = Array.from(anotherBag.entries())
   
-  const intersectEntries: [T, number][] = anotherBagEntries.filter(([k, _]) => hasElement(k, bag))
-                                                           .map(([k, v]) => [k, fn(v, search(k, bag))]);
+  const intersectEntries: [T, number][] = anotherBagEntries.filter(([key, _]) => hasElement(key, bag))
+                                                           .map(([key, frequencyuency]) => [key, fn(frequencyuency, search(key, bag))]);
 
   const intersection = new Map<T, number>(intersectEntries)
   return intersection;
@@ -69,9 +69,9 @@ function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
 
   const bagEntries = Array.from(bag.entries())
     
-  bagEntries.forEach(([k, freq]) => { 
-    const freqDiff = freq - search(k, anotherBag);
-    if (freqDiff > 0) minusMap.set(k, freqDiff);
+  bagEntries.forEach(([key, frequency]) => { 
+    const frequencyDiff = frequency - search(key, anotherBag);
+    if (frequencyDiff > 0) minusMap.set(key, frequencyDiff);
   })
   
   return minusMap;
@@ -80,8 +80,8 @@ function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
 function inclusion<T>(bag: Bag<T>, anotherBag: Bag<T>): boolean {
   const bagEntries = Array.from(bag.entries())
       
-  return bagEntries.every(([k, freq]) => { 
-    return search(k, anotherBag) >= freq
+  return bagEntries.every(([key, frequency]) => { 
+    return search(key, anotherBag) >= frequency
   })
 }
 
