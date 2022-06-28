@@ -70,11 +70,34 @@
 // -- 0
 // size bag = Map.size bag
 
-function insert(elem: any, multiset: Map<any, number>) : Map<any, number> {
-    const value = multiset.get(elem);
-    return multiset.set(elem, value !== undefined ? value + 1 : 0);
+function hasElement<T>(elem: T, bag: Map<T, number>): boolean {
+  return bag.has(elem);
 }
 
-module.exports = {
-    insert
-};
+function insert<T>(elem: T, bag: Map<T, number>): Map<T, number> {
+  let newQuantity = 1;
+
+  if(hasElement(elem, bag)) {
+    const oldQuantity = bag.get(elem) as number;
+    newQuantity = oldQuantity + 1
+  }
+
+  return bag.set(elem, newQuantity);
+}
+
+
+function deleteFromBag<T>(elem: T, bag: Map<T, number>): Map<T, number> {
+  if (hasElement(elem, bag)) {
+    const oldQuantity = bag.get(elem) as number;
+    if (oldQuantity === 1) {
+      bag.delete(elem);
+    } else {
+      bag.set(elem, oldQuantity - 1);
+    }
+
+  }
+
+  return bag;
+}
+
+export { insert, deleteFromBag }
