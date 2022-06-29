@@ -66,6 +66,18 @@ function search<T>(elem: T, bag: Bag<T>): number {
   return quantity;
 }
 
+/**
+ * Faz a interseção deste Bag com otherBag. A interseção consiste em ter os elementos
+ * que estão em ambos os bags combinados com a função passada como parâmetro.
+ * 
+ * Por exemplo:
+ * 
+ * A = {(a,3),(b,1)}
+ * B = {(a,1)}
+ * função: + (soma)
+ * 
+ * A.intersection(B) == {(a,4)}
+*/
 function intersectionWith<T>(
   bag: Bag<T>,
   anotherBag: Bag<T>,
@@ -81,6 +93,18 @@ function intersectionWith<T>(
   return intersection;
 }
 
+/**
+ * Faz a união deste Bag com anotherBag combinando. A união consiste em ter os elementos 
+ * dos dois Bags combinados com a função passada como parâmetro.
+ * 
+ * Por exemplo: 
+ * 
+ * A = {(a,3),(c,3)}, 
+ * B = {(a,4),(b,2),(c,2)}. 
+ * função: * (multiplicação)
+ * 
+ * A.union(B) == {(a,12),(c,6),(b,2)}
+*/
 function unionWith<T>(
   bag: Bag<T>,
   anotherBag: Bag<T>,
@@ -124,6 +148,19 @@ function intersection<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   return intersectionWith(bag, anotherBag, Math.min);
 }
 
+/**
+ * Faz a diferenca deste Bag com otherBag. A diferenca A \ B entre bags é definida como:
+ *   - Contem os elementos de A que nao estao em B;
+ *   - Contem os elementos x de A que estao em B mas com sua quantidade subtraida (qtde em A - qtde em B). 
+ *     Caso essa quantidade seja negativa o elemento deve serremovido do Bag. 
+ * 
+ * Por exemplo: 
+ * 
+ * A = {(a,3),(b,1)}
+ * B = {(b,2),(a,1)} 
+ * 
+ * A.minus(B) == {(a,2)}
+ */
 function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   let minusMap = new Map();
 
@@ -137,6 +174,20 @@ function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   return minusMap;
 }
 
+/**
+ * Testa se este Bag está incluso em otherBag. Para todo elemento deste bag, sua quantidade
+ * deve ser menor or igual a sua quantidade em otherBag.
+ * 
+ * Por exemplo:
+ * 
+ * A = {(a,7),(b,5)}
+ * B = {(a,9),(b,6))}
+ * 
+ * A.inclusion(B) == true
+ * B.inclusion(A) == false
+ * 
+ */
+
 function inclusion<T>(bag: Bag<T>, anotherBag: Bag<T>): boolean {
   const bagEntries = Array.from(bag.entries());
 
@@ -145,9 +196,23 @@ function inclusion<T>(bag: Bag<T>, anotherBag: Bag<T>): boolean {
   });
 }
 
+/**
+ * Realiza a soma deste Bag com otherBag. A soma de dois bags contem os elementos dos dois bags com suas quantidades somadas.
+ * 
+ * Por exemplo:
+ * 
+ * A = {(a,1),(b,3)}
+ * B = {(a,3)}
+ * 
+ * A.sum(B) == {(a,4),(b,3)}
+ */
 function sum<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   return unionWith(bag, anotherBag, (a, b) => a + b);
 }
+
+/**
+ * Retorna a quantidade total de elementos no Bag
+ */
 
 function size<T>(bag: Bag<T>): number {
   const values = Array.from(bag.values());
