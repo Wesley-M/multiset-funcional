@@ -23,14 +23,11 @@ function hasElement<T>(elem: T, bag: Bag<T>): boolean {
  * quantidade na estrutura será incrementada.
  */
 function insert<T>(elem: T, bag: Bag<T>): Bag<T> {
-  let newQuantity = 1;
+  const newQty = hasElement(elem, bag) 
+    ? (bag.get(elem) as number) + 1
+    : 1;
 
-  if (hasElement(elem, bag)) {
-    const oldQuantity = bag.get(elem) as number;
-    newQuantity = oldQuantity + 1;
-  }
-
-  return bag.set(elem, newQuantity);
+  return bag.set(elem, newQty);
 }
 
 /**
@@ -39,15 +36,11 @@ function insert<T>(elem: T, bag: Bag<T>): Bag<T> {
  * realmente ser removido da estrutura.
  */
 function remove<T>(elem: T, bag: Bag<T>): Bag<T> {
-  if (hasElement(elem, bag)) {
-    const oldQuantity = bag.get(elem) as number;
-
-    if (oldQuantity === 1) {
-      bag.delete(elem);
-    } else {
-      bag.set(elem, oldQuantity - 1);
-    }
-  }
+  hasElement(elem, bag) && (
+    (bag.get(elem) as number) == 1 
+      ? bag.delete(elem)
+      : bag.set(elem, bag.get(elem) as number - 1)
+  )
 
   return bag;
 }
@@ -57,13 +50,7 @@ function remove<T>(elem: T, bag: Bag<T>): Bag<T> {
  * elemento não exista, retorna 0 como a quantidade.
 */
 function search<T>(elem: T, bag: Bag<T>): number {
-  let quantity = 0;
-
-  if (hasElement(elem, bag)) {
-    quantity = bag.get(elem) as number;
-  }
-
-  return quantity;
+  return hasElement(elem, bag) ? bag.get(elem) as number : 0;
 }
 
 /**
@@ -83,14 +70,11 @@ function intersectionWith<T>(
   anotherBag: Bag<T>,
   fn: (n1: number, n2: number) => number
 ): Bag<T> {
-  const anotherBagEntries = Array.from(anotherBag.entries());
-
-  const intersectEntries: [T, number][] = anotherBagEntries
-    .filter(([key, _]) => hasElement(key, bag))
-    .map(([key, quantity]) => [key, fn(quantity, search(key, bag))]);
-
-  const intersection = new Map<T, number>(intersectEntries);
-  return intersection;
+  return new Map<T, number>(
+    Array.from(anotherBag)
+      .filter(([key, _]) => hasElement(key, bag))
+      .map(([key, quantity]) => [key, fn(quantity, search(key, bag))])
+  );
 }
 
 /**
@@ -110,10 +94,11 @@ function unionWith<T>(
   anotherBag: Bag<T>,
   fn: (n1: number, n2: number) => number
 ): Bag<T> {
-  const intersection = intersectionWith(bag, anotherBag, fn);
-
-  const union = new Map<T, number>([...anotherBag, ...bag, ...intersection]);
-  return union;
+  return new Map<T, number>([
+    ...anotherBag, 
+    ...bag, 
+    ...intersectionWith(bag, anotherBag, fn)
+  ]);
 }
 
 /**
@@ -162,16 +147,11 @@ function intersection<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
  * A.minus(B) == {(a,2)}
  */
 function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
-  let minusMap = new Map();
-
-  const bagEntries = Array.from(bag.entries());
-
-  bagEntries.forEach(([key, quantity]) => {
-    const quantityDiff = quantity - search(key, anotherBag);
-    if (quantityDiff > 0) minusMap.set(key, quantityDiff);
-  });
-
-  return minusMap;
+  return new Map(
+    Array.from(new Map(bag))
+      .filter(([key, quantity]) => (quantity - search(key, anotherBag)) > 0)
+      .map(([key, quantity]) => [key, quantity - search(key, anotherBag)])
+  );
 }
 
 /**
@@ -189,9 +169,7 @@ function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
  */
 
 function inclusion<T>(bag: Bag<T>, anotherBag: Bag<T>): boolean {
-  const bagEntries = Array.from(bag.entries());
-
-  return bagEntries.every(([key, quantity]) => {
+  return Array.from(bag).every(([key, quantity]) => {
     return search(key, anotherBag) >= quantity;
   });
 }
@@ -215,8 +193,9 @@ function sum<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
  */
 
 function size<T>(bag: Bag<T>): number {
-  const values = Array.from(bag.values());
-  return values.reduce((currentSum, number) => currentSum + number, 0);
+  return Array.from(bag.values()).reduce((currentSum, number) => {
+    return currentSum + number
+  }, 0);
 }
 
 export {
