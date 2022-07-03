@@ -146,7 +146,7 @@ function intersection<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
  */
 function minus<T>(bag: Bag<T>, anotherBag: Bag<T>): Bag<T> {
   return new Map(
-    Array.from(new Map(bag))
+    Array.from(bag)
       .filter(([key, quantity]) => (quantity - search(key, anotherBag)) > 0)
       .map(([key, quantity]) => [key, quantity - search(key, anotherBag)])
   );
