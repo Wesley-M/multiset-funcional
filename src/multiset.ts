@@ -23,11 +23,7 @@ function hasElement<T>(elem: T, bag: Bag<T>): boolean {
  * quantidade na estrutura será incrementada.
  */
 function insert<T>(elem: T, bag: Bag<T>): Bag<T> {
-  const newQty = hasElement(elem, bag) 
-    ? (bag.get(elem) as number) + 1
-    : 1;
-
-  return bag.set(elem, newQty);
+  return bag.set(elem, search(elem, bag) + 1);
 }
 
 /**
@@ -36,11 +32,13 @@ function insert<T>(elem: T, bag: Bag<T>): Bag<T> {
  * realmente ser removido da estrutura.
  */
 function remove<T>(elem: T, bag: Bag<T>): Bag<T> {
-  hasElement(elem, bag) && (
-    (bag.get(elem) as number) == 1 
-      ? bag.delete(elem)
-      : bag.set(elem, bag.get(elem) as number - 1)
-  )
+  const oldQuantity = search(elem, bag);
+
+  if (oldQuantity <= 1) {
+    bag.delete(elem);
+  } else {
+    bag.set(elem, oldQuantity - 1);
+  }
 
   return bag;
 }
